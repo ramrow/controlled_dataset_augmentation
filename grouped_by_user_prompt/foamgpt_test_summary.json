@@ -1,0 +1,12 @@
+{
+  "file": "C:\\Users\\Peijing Xu\\projects\\yue_research\\dataset\\foamgpt_test.jsonl",
+  "total_rows": 369,
+  "unique_user_prompts": 150,
+  "duplicate_prompt_rows": 319,
+  "largest_group_size": 12,
+  "missing_user_prompt_rows": 0,
+  "outputs": {
+    "groups_json": "C:\\Users\\Peijing Xu\\projects\\yue_research\\dataset\\grouped_by_user_prompt\\foamgpt_test_groups.json",
+    "groups_csv": "C:\\Users\\Peijing Xu\\projects\\yue_research\\dataset\\grouped_by_user_prompt\\foamgpt_test_groups.csv"
+  }
+}
