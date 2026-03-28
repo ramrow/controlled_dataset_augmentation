@@ -1,9 +1,0 @@
-Foam-Agent/database/
-Foam-Agent/output/
-Foam-Agent/run/
-*.png
-*.jsonl
-*.txt
-*.pyc
-LeoYML___foam_gpt/
-LeoYML___foam_gpt_default_0.0.0_22dde49ce18b09a1a96951cfc83885786a52dddc.lock
