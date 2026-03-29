@@ -254,9 +254,9 @@ def main():
     ap.add_argument("--work-dir", default="ladder_runs")
     ap.add_argument("--out-dir", default="ladder_outputs")
     ap.add_argument("--chunk-index", type=int, default=0)
-    ap.add_argument("--chunk-count", type=int, default=6)
+    ap.add_argument("--chunk-count", type=int, default=12)
     ap.add_argument("--stages", default="velocity,viscosity,density")
-    ap.add_argument("--timeout-sec", type=int, default=1800)
+    ap.add_argument("--timeout-sec", type=int, default=2600)
     args = ap.parse_args()
 
     root = Path(__file__).resolve().parent
@@ -390,4 +390,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 

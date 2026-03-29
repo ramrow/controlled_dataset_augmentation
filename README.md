@@ -72,23 +72,24 @@ python controlled_augmentation_ladder.py \
   --split train \
   --openfoam-path "$WM_PROJECT_DIR" \
   --chunk-index 0 \
-  --chunk-count 6 \
-  --stages velocity,viscosity,density
+  --chunk-count 12 \
+  --stages velocity --timeout-sec 2600,viscosity,density \
+  --timeout-sec 2600
 ```
 
 ---
 
-## Run 6 batches in parallel
+## Run 12 batches in parallel
 
 Run these **simultaneously** in 6 terminals/jobs:
 
 ```bash
-python controlled_augmentation_ladder.py --input foamgpt_train.jsonl --split train --openfoam-path "$WM_PROJECT_DIR" --chunk-index 0 --chunk-count 6
-python controlled_augmentation_ladder.py --input foamgpt_train.jsonl --split train --openfoam-path "$WM_PROJECT_DIR" --chunk-index 1 --chunk-count 6
-python controlled_augmentation_ladder.py --input foamgpt_train.jsonl --split train --openfoam-path "$WM_PROJECT_DIR" --chunk-index 2 --chunk-count 6
-python controlled_augmentation_ladder.py --input foamgpt_train.jsonl --split train --openfoam-path "$WM_PROJECT_DIR" --chunk-index 3 --chunk-count 6
-python controlled_augmentation_ladder.py --input foamgpt_train.jsonl --split train --openfoam-path "$WM_PROJECT_DIR" --chunk-index 4 --chunk-count 6
-python controlled_augmentation_ladder.py --input foamgpt_train.jsonl --split train --openfoam-path "$WM_PROJECT_DIR" --chunk-index 5 --chunk-count 6
+python controlled_augmentation_ladder.py --input foamgpt_train.jsonl --split train --openfoam-path "$WM_PROJECT_DIR" --chunk-index 0 --chunk-count 12
+python controlled_augmentation_ladder.py --input foamgpt_train.jsonl --split train --openfoam-path "$WM_PROJECT_DIR" --chunk-index 1 --chunk-count 12
+python controlled_augmentation_ladder.py --input foamgpt_train.jsonl --split train --openfoam-path "$WM_PROJECT_DIR" --chunk-index 2 --chunk-count 12
+python controlled_augmentation_ladder.py --input foamgpt_train.jsonl --split train --openfoam-path "$WM_PROJECT_DIR" --chunk-index 3 --chunk-count 12
+python controlled_augmentation_ladder.py --input foamgpt_train.jsonl --split train --openfoam-path "$WM_PROJECT_DIR" --chunk-index 4 --chunk-count 12
+python controlled_augmentation_ladder.py --input foamgpt_train.jsonl --split train --openfoam-path "$WM_PROJECT_DIR" --chunk-index 5 --chunk-count 12
 ```
 
 You can do the same for test split by changing `--input foamgpt_test.jsonl --split test`.
@@ -114,7 +115,7 @@ Written under `ladder_outputs/` per chunk:
 
 - Each unique prompt-group is assigned to exactly one chunk by stable hash bucketing.
 - Bucket function: `sha256(key) % chunk_count` where `key` is case/prompt-based.
-- With `chunk_count=6`, each case-group goes to one of chunk indices `0..5`.
+- With `chunk_count=12`, each case-group goes to one of chunk indices `0..11`.
 - This guarantees:
   - no overlap across chunks
   - safe parallel execution
@@ -134,7 +135,7 @@ These are still present but are separate from the controlled ladder pipeline.
 To run only velocity perturbations, set:
 
 ```bash
---stages velocity
+--stages velocity --timeout-sec 2600
 ```
 
 Example (one chunk):
@@ -145,19 +146,19 @@ python controlled_augmentation_ladder.py \
   --split train \
   --openfoam-path "$WM_PROJECT_DIR" \
   --chunk-index 0 \
-  --chunk-count 6 \
-  --stages velocity
+  --chunk-count 12 \
+  --stages velocity --timeout-sec 2600
 ```
 
 Example (6 parallel chunks, velocity-only):
 
 ```bash
-python controlled_augmentation_ladder.py --input foamgpt_train.jsonl --split train --openfoam-path "$WM_PROJECT_DIR" --chunk-index 0 --chunk-count 6 --stages velocity
-python controlled_augmentation_ladder.py --input foamgpt_train.jsonl --split train --openfoam-path "$WM_PROJECT_DIR" --chunk-index 1 --chunk-count 6 --stages velocity
-python controlled_augmentation_ladder.py --input foamgpt_train.jsonl --split train --openfoam-path "$WM_PROJECT_DIR" --chunk-index 2 --chunk-count 6 --stages velocity
-python controlled_augmentation_ladder.py --input foamgpt_train.jsonl --split train --openfoam-path "$WM_PROJECT_DIR" --chunk-index 3 --chunk-count 6 --stages velocity
-python controlled_augmentation_ladder.py --input foamgpt_train.jsonl --split train --openfoam-path "$WM_PROJECT_DIR" --chunk-index 4 --chunk-count 6 --stages velocity
-python controlled_augmentation_ladder.py --input foamgpt_train.jsonl --split train --openfoam-path "$WM_PROJECT_DIR" --chunk-index 5 --chunk-count 6 --stages velocity
+python controlled_augmentation_ladder.py --input foamgpt_train.jsonl --split train --openfoam-path "$WM_PROJECT_DIR" --chunk-index 0 --chunk-count 12 --stages velocity --timeout-sec 2600
+python controlled_augmentation_ladder.py --input foamgpt_train.jsonl --split train --openfoam-path "$WM_PROJECT_DIR" --chunk-index 1 --chunk-count 12 --stages velocity --timeout-sec 2600
+python controlled_augmentation_ladder.py --input foamgpt_train.jsonl --split train --openfoam-path "$WM_PROJECT_DIR" --chunk-index 2 --chunk-count 12 --stages velocity --timeout-sec 2600
+python controlled_augmentation_ladder.py --input foamgpt_train.jsonl --split train --openfoam-path "$WM_PROJECT_DIR" --chunk-index 3 --chunk-count 12 --stages velocity --timeout-sec 2600
+python controlled_augmentation_ladder.py --input foamgpt_train.jsonl --split train --openfoam-path "$WM_PROJECT_DIR" --chunk-index 4 --chunk-count 12 --stages velocity --timeout-sec 2600
+python controlled_augmentation_ladder.py --input foamgpt_train.jsonl --split train --openfoam-path "$WM_PROJECT_DIR" --chunk-index 5 --chunk-count 12 --stages velocity --timeout-sec 2600
 ```
 
 ## Important batching behavior
@@ -177,13 +178,13 @@ Script: `merge_ladder_batches.py`
 Merge train outputs:
 
 ```bash
-python merge_ladder_batches.py --out-dir ladder_outputs --split train --chunk-count 6
+python merge_ladder_batches.py --out-dir ladder_outputs --split train --chunk-count 12
 ```
 
 Merge test outputs:
 
 ```bash
-python merge_ladder_batches.py --out-dir ladder_outputs --split test --chunk-count 6
+python merge_ladder_batches.py --out-dir ladder_outputs --split test --chunk-count 12
 ```
 
 Merged outputs:
@@ -226,10 +227,11 @@ bash submit_all_velocity.sh
 
 ### Notes
 
-- Jobs are split by `--chunk-index 0..5` with `--chunk-count 6`.
+- Jobs are split by `--chunk-index 0..5` with `--chunk-count 12`.
 - Each chunk writes outputs independently under `ladder_outputs/`.
 - After completion, merge with:
 
 ```bash
-python merge_ladder_batches.py --out-dir ladder_outputs --split train --chunk-count 6
+python merge_ladder_batches.py --out-dir ladder_outputs --split train --chunk-count 12
 ```
+
