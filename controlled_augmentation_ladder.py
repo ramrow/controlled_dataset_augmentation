@@ -149,8 +149,16 @@ def run_foam_agent(foam_agent_dir: Path, openfoam_path: str, output_dir: Path, r
         "--output", str(output_dir),
         "--prompt_path", str(requirement_path),
     ]
-    proc = subprocess.run(cmd, cwd=str(foam_agent_dir.parent), capture_output=True, text=True, timeout=timeout_sec)
-    return proc.returncode, proc.stdout[-8000:], proc.stderr[-8000:]
+    try:
+        proc = subprocess.run(cmd, cwd=str(foam_agent_dir.parent), capture_output=True, text=True, timeout=timeout_sec)
+        return proc.returncode, (proc.stdout or "")[-8000:], (proc.stderr or "")[-8000:]
+    except subprocess.TimeoutExpired as e:
+        so = (e.stdout or "")[-8000:] if isinstance(e.stdout, str) else ""
+        se = (e.stderr or "")[-8000:] if isinstance(e.stderr, str) else ""
+        timeout_msg = f"TimeoutExpired: command exceeded {timeout_sec} seconds"
+        return 124, so, (se + "\\n" + timeout_msg).strip()
+    except Exception as e:
+        return 125, "", f"runner_exception: {e}"
 
 
 def find_case_root(run_out: Path) -> Path:
@@ -321,6 +329,7 @@ def main():
                 ok = False
                 reason = "unsupported_openfoam10_requirement"
 
+            timed_out = (rc == 124)
             case_record = {
                 "time": datetime.utcnow().isoformat(),
                 "case_name": case_name,
@@ -336,7 +345,7 @@ def main():
                 "case_root": str(case_root),
                 "return_code": rc,
                 "success": bool(ok and rc == 0),
-                "reason": reason,
+                "reason": ("timeout" if timed_out else reason),
             }
 
             if ok and rc == 0:
@@ -381,3 +390,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
