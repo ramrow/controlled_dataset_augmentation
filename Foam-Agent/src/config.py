@@ -6,7 +6,7 @@ from pathlib import Path
 
 @dataclass
 class Config:
-    max_loop: int = 10
+    max_loop: int = 25
     batchsize: int = 10
     searchdocs: int = 10 # max(10, searchdocs)
     run_times: int = 1   # current run number (for directory naming)
@@ -80,5 +80,6 @@ class Config:
             print(f"[Config] model_version={self.model_version} (env:{version_key})")
         else:
             print(f"[Config] model_version={self.model_version} (default)")
+
 
 

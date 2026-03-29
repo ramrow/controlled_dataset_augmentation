@@ -13,7 +13,7 @@ This folder now supports two workflows:
 - Foam-Agent default LLM is set to:
   - `model_provider: bedrock`
   - `model_version: arn:aws:bedrock:us-west-2:567316078106:inference-profile/us.anthropic.claude-opus-4-6-v1`
-- Reviewer loop max is set to **10** (`Foam-Agent/src/config.py`)
+- Reviewer loop max is set to **25** (`Foam-Agent/src/config.py`)
 - Reviewer loop has early termination for unsupported OpenFOAM10 requirements:
   - termination reason: `unsupported_openfoam10_requirement`
 
@@ -167,3 +167,69 @@ The augmentation iterates over **unique user_prompt groups** (deduplicated promp
 - Grouping key: identical `user_prompt`
 - Each group is processed once for variant generation
 - Successful generated files are then expanded into per-file dataset rows and appended immediately
+
+---
+
+## Merge all 6 batch outputs into single files
+
+Script: `merge_ladder_batches.py`
+
+Merge train outputs:
+
+```bash
+python merge_ladder_batches.py --out-dir ladder_outputs --split train --chunk-count 6
+```
+
+Merge test outputs:
+
+```bash
+python merge_ladder_batches.py --out-dir ladder_outputs --split test --chunk-count 6
+```
+
+Merged outputs:
+- `ladder_outputs/accepted_rows_<split>_merged.jsonl`
+- `ladder_outputs/accepted_cases_<split>_merged.jsonl`
+- `ladder_outputs/failed_<split>_merged.jsonl`
+- `ladder_outputs/progress_<split>_merged.jsonl`
+- `ladder_outputs/merge_summary_<split>.json`
+
+---
+
+## SLURM velocity-only batch jobs (6 chunks)
+
+Folder:
+- `slurm/`
+
+Files:
+- `velocity_chunk_0.slurm` ... `velocity_chunk_5.slurm`
+- `submit_all_velocity.sh`
+- `aws_env.sh`
+
+### One-time AWS setup for all 6 jobs
+
+Edit `slurm/aws_env.sh` and set only these three keys:
+
+```bash
+export AWS_ACCESS_KEY_ID="..."
+export AWS_SECRET_ACCESS_KEY="..."
+export AWS_SESSION_TOKEN="..."
+```
+
+All 6 SLURM jobs source this same file, so you only set credentials once.
+
+### Submit all 6 in one go
+
+```bash
+cd /mnt/lustre/rpi/pxu10/dataset/slurm
+bash submit_all_velocity.sh
+```
+
+### Notes
+
+- Jobs are split by `--chunk-index 0..5` with `--chunk-count 6`.
+- Each chunk writes outputs independently under `ladder_outputs/`.
+- After completion, merge with:
+
+```bash
+python merge_ladder_batches.py --out-dir ladder_outputs --split train --chunk-count 6
+```
