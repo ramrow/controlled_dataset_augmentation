@@ -1,0 +1,27 @@
+#!/bin/bash
+set -e
+cd /mnt/lustre/rpi/pxu10/dataset/slurm
+sbatch augment_chunk_24.slurm
+sbatch augment_chunk_25.slurm
+sbatch augment_chunk_26.slurm
+sbatch augment_chunk_27.slurm
+sbatch augment_chunk_28.slurm
+sbatch augment_chunk_29.slurm
+sbatch augment_chunk_30.slurm
+sbatch augment_chunk_31.slurm
+sbatch augment_chunk_32.slurm
+sbatch augment_chunk_33.slurm
+sbatch augment_chunk_34.slurm
+sbatch augment_chunk_35.slurm
+sbatch augment_chunk_36.slurm
+sbatch augment_chunk_37.slurm
+sbatch augment_chunk_38.slurm
+sbatch augment_chunk_39.slurm
+sbatch augment_chunk_40.slurm
+sbatch augment_chunk_41.slurm
+sbatch augment_chunk_42.slurm
+sbatch augment_chunk_43.slurm
+sbatch augment_chunk_44.slurm
+sbatch augment_chunk_45.slurm
+sbatch augment_chunk_46.slurm
+sbatch augment_chunk_47.slurm

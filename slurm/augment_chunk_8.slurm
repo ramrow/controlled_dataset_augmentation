@@ -11,4 +11,4 @@
 source /mnt/lustre/rpi/pxu10/agent/bin/activate
 source /mnt/lustre/rpi/pxu10/dataset/slurm/aws_env.sh
 cd /mnt/lustre/rpi/pxu10/dataset
-python controlled_augmentation_ladder.py --input foamgpt_train.jsonl --split train --openfoam-path "$WM_PROJECT_DIR" --chunk-index 2 --chunk-count 12 --stages velocity --timeout-sec 2600
+python controlled_augmentation_ladder.py --input foamgpt_train.jsonl --split train --openfoam-path "$WM_PROJECT_DIR" --chunk-index 8 --chunk-count 72 --stages velocity,viscosity,density --timeout-sec 2600

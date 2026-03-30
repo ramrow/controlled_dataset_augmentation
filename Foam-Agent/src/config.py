@@ -36,7 +36,7 @@ class Config:
     # - Ollama: "qwen2.5:32b-instruct"
     # - Bedrock: application inference profile ARN
     # - Anthropic: claude-3-5-sonnet-latest
-    model_version: str = "arn:aws:bedrock:us-west-2:567316078106:inference-profile/us.anthropic.claude-opus-4-6-v1"
+    model_version: str = "arn:aws:bedrock:us-west-2:567316078106:inference-profile/us.anthropic.claude-sonnet-4-6"
     temperature: float = 0.0
 
     # Embedding Configuration
@@ -80,6 +80,7 @@ class Config:
             print(f"[Config] model_version={self.model_version} (env:{version_key})")
         else:
             print(f"[Config] model_version={self.model_version} (default)")
+
 
 
 
